@@ -50,7 +50,7 @@
     <div class="dashboard">
         <div class="gauge-container" style="grid-column: span 2;">
             <h3>Australian Cities Map</h3>
-            <div id="map"></div> <!-- 用于放置地图 -->
+            <div id="map"></div>
         </div>
         <div class="gauge-container">
             <h3>On-time Performance</h3>
@@ -125,9 +125,9 @@
                                 "type": "quantitative",
                                 "scale": {
                                     "domain": [0, 100],
-                                    "range": ["#003087", "#005EB8"]  // Expedia 深蓝色
+                                    "range": ["#003087", "#005EB8"]  
                                 },
-                                "legend": null  // 移除图例
+                                "legend": null  
                             },
                             "theta": {
                                 "field": "OnTimePercentage",
@@ -201,9 +201,9 @@
                                 "type": "quantitative",
                                 "scale": {
                                     "domain": [0, 100],
-                                    "range": ["#FFD700", "#FFBF00"]  // 黄色
+                                    "range": ["#FFD700", "#FFBF00"]  
                                 },
-                                "legend": null  // 移除图例
+                                "legend": null  
                             },
                             "theta": {
                                 "field": "CancellationRate",
@@ -256,7 +256,7 @@ async function embedMap() {
                 },
                 "mark": "geoshape",
                 "encoding": {
-                    "color": {"value": "#00355f"}  // 深蓝色
+                    "color": {"value": "#00355f"}  
                 }
             },
             {
@@ -288,7 +288,7 @@ async function embedMap() {
                         "as": ["city_lat", "city_lon"]
                     }
                 ],
-                "mark": {"type": "circle", "color": "#ffbf00"},  // 黄色
+                "mark": {"type": "circle", "color": "#ffbf00"}, 
                 "encoding": {
                     "longitude": {"field": "city_lon", "type": "quantitative"},
                     "latitude": {"field": "city_lat", "type": "quantitative"},
@@ -319,7 +319,7 @@ async function embedMap() {
                     "longitude": {"field": "lon", "type": "quantitative"},
                     "latitude": {"field": "lat", "type": "quantitative"},
                     "text": {"field": "city"},
-                    "color": {"value": "#ffbf00"}  // 黄色
+                    "color": {"value": "#ffbf00"}  
                 }
             }
         ]
