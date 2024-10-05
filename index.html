@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airline On-time and Cancellation Performance</title>
+    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        h1 {
+            text-align: center;
+        }
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            width: 80%;
+            margin-top: 20px;
+        }
+        .gauge-container {
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+        select {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+</head>
+<body>
+    <h1>Airline On-time and Cancellation Performance</h1>
+
+    <!-- Dropdown for Airline selection -->
+    <label for="airlineSelect">Select Airline: </label>
+    <select id="airlineSelect" onchange="updateCharts()"></select>
+
+    <!-- Dashboard container -->
+    <div class="dashboard">
+        <div class="gauge-container" style="grid-column: span 2;">
+            <h3>Australian Cities Map</h3>
+            <div id="map"></div> <!-- 用于放置地图 -->
+        </div>
+        <div class="gauge-container">
+            <h3>On-time Performance</h3>
+            <div id="onTimeGauge"></div>
+        </div>
+        <div class="gauge-container">
+            <h3>Cancellation Rate</h3>
+            <div id="cancellationGauge"></div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        // Function to load the airlines dynamically into the dropdown
+        async function loadAirlines() {
+            const dataUrl = "https://raw.githubusercontent.com/Zongl1n/FIT3179/refs/heads/main/3179temp/DomesticAirlines.csv";
+            const response = await fetch(dataUrl);
+            const csvText = await response.text();
+            const csvData = csvText.split('\n').slice(1).map(row => row.split(','));
+            const airlines = [...new Set(csvData.map(row => row[3]).filter(airline => airline && airline !== 'undefined'))];
+    
+            const airlineSelect = document.getElementById('airlineSelect');
+            airlines.forEach(airline => {
+                const option = document.createElement('option');
+                option.value = airline;
+                option.text = airline;
+                airlineSelect.add(option);
+            });
+    
+            updateCharts();  // Initialize with the first airline
+        }
+    
+        // Function to update both charts based on selected airline
+        async function updateCharts() {
+            const selectedAirline = document.getElementById("airlineSelect").value;
+    
+            // Vega-Lite specification for the on-time percentage gauge chart with tooltip
+            const onTimeGaugeSpec = {
+                "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+                "width": 200,
+                "height": 200,
+                "data": {
+                    "url": "https://raw.githubusercontent.com/Zongl1n/FIT3179/refs/heads/main/3179temp/DomesticAirlines.csv",
+                    "format": {"type": "csv"}
+                },
+                "transform": [
+                    {
+                        "filter": "datum.Airline == '" + selectedAirline + "'"
+                    },
+                    {
+                        "aggregate": [
+                            {"op": "sum", "field": "Departures_On_Time", "as": "Total_On_Time"},
+                            {"op": "sum", "field": "Departures_Delayed", "as": "Total_Delayed"}
+                        ]
+                    },
+                    {
+                        "calculate": "datum.Total_On_Time / (datum.Total_On_Time + datum.Total_Delayed) * 100",
+                        "as": "OnTimePercentage"
+                    }
+                ],
+                "layer": [
+                    {
+                        "mark": {
+                            "type": "arc",
+                            "innerRadius": 80,
+                            "outerRadius": 100,
+                            "startAngle": 0,
+                            "endAngle": {"expr": "PI"}
+                        },
+                        "encoding": {
+                            "color": {
+                                "field": "OnTimePercentage",
+                                "type": "quantitative",
+                                "scale": {
+                                    "domain": [0, 100],
+                                    "range": ["#003087", "#005EB8"]  // Expedia 深蓝色
+                                },
+                                "legend": null  // 移除图例
+                            },
+                            "theta": {
+                                "field": "OnTimePercentage",
+                                "type": "quantitative",
+                                "stack": false
+                            },
+                            "tooltip": [
+                                {"field": "OnTimePercentage", "title": "On-time Percentage", "format": ".1f"}
+                            ]
+                        }
+                    },
+                    {
+                        "mark": "text",
+                        "encoding": {
+                            "text": {
+                                "field": "OnTimePercentage",
+                                "type": "quantitative",
+                                "format": ".0f"
+                            },
+                            "color": {"value": "#003087"},
+                            "x": {"value": 100},
+                            "y": {"value": 100},
+                            "size": {"value": 30}
+                        },
+                        "transform": [
+                            {
+                                "calculate": "datum.OnTimePercentage + '%'",
+                                "as": "OnTimePercentageText"
+                            }
+                        ]
+                    }
+                ]
+            };
+    
+            // Vega-Lite specification for the cancellation rate gauge chart with tooltip
+            const cancellationGaugeSpec = {
+                "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+                "width": 200,
+                "height": 200,
+                "data": {
+                    "url": "https://raw.githubusercontent.com/Zongl1n/FIT3179/refs/heads/main/3179temp/DomesticAirlines.csv",
+                    "format": {"type": "csv"}
+                },
+                "transform": [
+                    {
+                        "filter": "datum.Airline == '" + selectedAirline + "'"
+                    },
+                    {
+                        "aggregate": [
+                            {"op": "sum", "field": "Cancellations", "as": "Total_Cancellations"},
+                            {"op": "sum", "field": "Departures_On_Time", "as": "Total_Departures"}
+                        ]
+                    },
+                    {
+                        "calculate": "datum.Total_Cancellations / datum.Total_Departures * 100",
+                        "as": "CancellationRate"
+                    }
+                ],
+                "layer": [
+                    {
+                        "mark": {
+                            "type": "arc",
+                            "innerRadius": 80,
+                            "outerRadius": 100,
+                            "startAngle": 0,
+                            "endAngle": {"expr": "PI"}
+                        },
+                        "encoding": {
+                            "color": {
+                                "field": "CancellationRate",
+                                "type": "quantitative",
+                                "scale": {
+                                    "domain": [0, 100],
+                                    "range": ["#FFD700", "#FFBF00"]  // 黄色
+                                },
+                                "legend": null  // 移除图例
+                            },
+                            "theta": {
+                                "field": "CancellationRate",
+                                "type": "quantitative",
+                                "stack": false
+                            },
+                            "tooltip": [
+                                {"field": "CancellationRate", "title": "Cancellation Rate", "format": ".1f"}
+                            ]
+                        }
+                    },
+                    {
+                        "mark": "text",
+                        "encoding": {
+                            "text": {
+                                "field": "CancellationRate",
+                                "type": "quantitative",
+                                "format": ".0f"
+                            },
+                            "color": {"value": "#FFD700"},
+                            "x": {"value": 100},
+                            "y": {"value": 100},
+                            "size": {"value": 30}
+                        },
+                        "transform": [
+                            {
+                                "calculate": "datum.CancellationRate + '%'",
+                                "as": "CancellationRateText"
+                            }
+                        ]
+                    }
+                ]
+            };
+            // Function to embed the Australian Cities Map
+async function embedMap() {
+    const mapSpec = {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "width": 800,
+        "height": 500,
+        "projection": {
+            "type": "mercator",
+            "scale": 500,
+            "center": [133, -28]
+        },
+        "layer": [
+            {
+                "data": {
+                    "url": "https://raw.githubusercontent.com/Zongl1n/FIT3179/refs/heads/main/3179temp/ne_10m_admin_0_countries.json",
+                    "format": {"type": "topojson", "feature": "ne_10m_admin_0_countries"}
+                },
+                "mark": "geoshape",
+                "encoding": {
+                    "color": {"value": "#00355f"}  // 深蓝色
+                }
+            },
+            {
+                "data": {
+                    "url": "https://raw.githubusercontent.com/Zongl1n/FIT3179/refs/heads/main/3179temp/audomcitypairs-202102.csv",
+                    "format": {"type": "csv"}
+                },
+                "transform": [
+                    {"calculate": "upper(datum.City1)", "as": "City1_upper"},
+                    {"filter": "datum.City1_upper == 'SYDNEY' || datum.City1_upper == 'MELBOURNE' || datum.City1_upper == 'BRISBANE' || datum.City1_upper == 'PERTH' || datum.City1_upper == 'ADELAIDE' || datum.City1_upper == 'DARWIN' || datum.City1_upper == 'HOBART'"},
+                    {"aggregate": [{"op": "count", "as": "city_count"}], "groupby": ["City1_upper"]},
+                    {
+                        "lookup": "City1_upper",
+                        "from": {
+                            "data": {
+                                "values": [
+                                    {"city": "SYDNEY", "lat": -33.8688, "lon": 151.2093},
+                                    {"city": "MELBOURNE", "lat": -37.8136, "lon": 144.9631},
+                                    {"city": "BRISBANE", "lat": -27.4698, "lon": 153.0251},
+                                    {"city": "PERTH", "lat": -31.9505, "lon": 115.8605},
+                                    {"city": "ADELAIDE", "lat": -34.9285, "lon": 138.6007},
+                                    {"city": "DARWIN", "lat": -12.4634, "lon": 130.8456},
+                                    {"city": "HOBART", "lat": -42.8821, "lon": 147.3272}
+                                ]
+                            },
+                            "key": "city",
+                            "fields": ["lat", "lon"]
+                        },
+                        "as": ["city_lat", "city_lon"]
+                    }
+                ],
+                "mark": {"type": "circle", "color": "#ffbf00"},  // 黄色
+                "encoding": {
+                    "longitude": {"field": "city_lon", "type": "quantitative"},
+                    "latitude": {"field": "city_lat", "type": "quantitative"},
+                    "size": {"field": "city_count", "type": "quantitative", "scale": {"range": [100, 1000]}},
+                    "tooltip": [
+                        {"field": "City1_upper", "type": "nominal"},
+                        {"field": "city_count", "type": "quantitative"}
+                    ]
+                }
+            },
+            {
+                "data": {
+                    "values": [
+                        {"city": "SYDNEY", "lat": -33.8688, "lon": 151.2093},
+                        {"city": "MELBOURNE", "lat": -37.8136, "lon": 144.9631},
+                        {"city": "BRISBANE", "lat": -27.4698, "lon": 153.0251},
+                        {"city": "PERTH", "lat": -31.9505, "lon": 115.8605},
+                        {"city": "ADELAIDE", "lat": -34.9285, "lon": 138.6007},
+                        {"city": "DARWIN", "lat": -12.4634, "lon": 130.8456},
+                        {"city": "HOBART", "lat": -42.8821, "lon": 147.3272}
+                    ]
+                },
+                "mark": {
+                    "type": "text",
+                    "dy": -10
+                },
+                "encoding": {
+                    "longitude": {"field": "lon", "type": "quantitative"},
+                    "latitude": {"field": "lat", "type": "quantitative"},
+                    "text": {"field": "city"},
+                    "color": {"value": "#ffbf00"}  // 黄色
+                }
+            }
+        ]
+    };
+
+    // Embed the map
+    vegaEmbed('#map', mapSpec).catch(console.error);
+}
+
+// Call the map embedding function to load the map
+embedMap();
+
+    
+            // Embed the charts
+            vegaEmbed('#onTimeGauge', onTimeGaugeSpec).catch(console.error);
+            vegaEmbed('#cancellationGauge', cancellationGaugeSpec).catch(console.error);
+        }
+    
+        // Load airlines into the dropdown and initialize the charts
+        loadAirlines();
+    </script>
+    
+</body>
+</html>
