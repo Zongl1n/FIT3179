@@ -22,12 +22,12 @@
             top: 0;
             width: 100%;
             z-index: 1000;
-            background-color: #FFD700; /* 黄色背景 */
+            background-color: #FFD700; 
             border-bottom: 5px solid #FFD700;
             padding: 20px;
             box-sizing: border-box;
             display: flex;
-            justify-content: flex-end; /* 使标题靠右 */
+            justify-content: flex-end; 
             align-items: center;
         }
 
@@ -39,7 +39,7 @@
 
         .australian {
             font-family: 'Roboto', sans-serif;
-            color: #003087; /* 深蓝色文字 */
+            color: #003087; 
             font-weight: bold;
             font-size: 1.8em;
             letter-spacing: 0.1em;
@@ -49,8 +49,8 @@
         .flights {
             font-family: 'Roboto', sans-serif;
             font-size: 1.8em;
-            background-color: #003087; /* 深蓝色背景 */
-            color: #FFD700; /* 黄色字体 */
+            background-color: #003087; 
+            color: #FFD700; 
             padding: 5px 10px;
             border: 2px solid #003087;
             border-radius: 5px;
@@ -64,7 +64,7 @@
             grid-template-rows: auto auto auto;
             gap: 10px;
             width: 100%;
-            margin-top: 100px; /* 留出空间给固定在顶部的banner */
+            margin-top: 100px; 
             padding: 20px;
             box-sizing: border-box;
         }
@@ -78,15 +78,15 @@
         }
 
         .map-large {
-            grid-column: span 2; /* 大图跨越前两列 */
-            grid-row: span 2; /* 大图跨越前两行 */
+            grid-column: span 2; 
+            grid-row: span 2; 
             width: 100%;
-            height: 500px; /* 调整高度 */
+            height: 500px; 
         }
 
         .small-chart, .bottom-small-chart {
             width: 100%;
-            height: 280px; /* 小图的高度统一 */
+            height: 280px; 
             margin-top: 100px
         }
 
@@ -94,6 +94,23 @@
             margin-bottom: 10px;
             align-self: flex-start;
         }
+        h3 {
+    font-family: 'Poppins', sans-serif; 
+    font-size: 1.5em; 
+    letter-spacing: 0.05em; 
+    font-weight: 600; 
+    color: #00355f; 
+    text-transform: uppercase; 
+    margin-bottom: 15px; 
+}
+p {
+    font-family: 'Arial', sans-serif; 
+    font-size: 1.1em; 
+    line-height: 1.6em; 
+    color: #00355f; 
+    margin-bottom: 15px; 
+}
+
     </style>
 </head>
 <body>
@@ -108,91 +125,87 @@
         <div class="gauge-container map-large">
             <h3 style="color: #00355f;">Australian Cities Map</h3>
             <p style="color: #00355f;">
-                This map displays the main cities in Australia along with the number of departing flights. 
-                Larger circles represent higher volumes of traffic, helping to identify the busiest air travel hubs in the country. 
-                Use the airline selection to view data specific to different carriers.
+                This map shows Australia's main cities and departing flights volume.
             </p>
             <label for="airlineSelect" style="color: #00355f;">Select Airline: </label>
             <select id="airlineSelect" onchange="updateCharts()"></select>
             <div id="map"></div>
         </div>
-        
+    
         <div class="gauge-container small-chart">
             <h3 style="color: #00355f;">On-time Performance</h3>
             <p style="color: #00355f;">
-                This gauge displays the percentage of flights that departed or arrived on time. 
-                A higher percentage indicates better punctuality, which is key for passenger satisfaction 
-                and operational efficiency of airlines and airports.
+                This gauge shows the percentage of on-time flights.
             </p>
             <div id="onTimeGauge"></div>
         </div>
-        
+    
         <div class="gauge-container small-chart">
             <h3 style="color: #00355f;">Cancellation Rate</h3>
             <p style="color: #00355f;">
-                This gauge shows the percentage of flights that were canceled. 
-                A lower rate reflects better reliability, making it a critical metric 
-                for understanding operational challenges and passenger impact.
+                This gauge shows the percentage of flight cancellations.
             </p>
             <div id="cancellationGauge"></div>
         </div>
-        
+    
         <div class="gauge-container small-chart">
             <h3 style="color: #00355f;">Australian States Flight Volume Map</h3>
             <p style="color: #00355f;">
-                This map illustrates the distribution of flight volumes across different states in Australia. 
-                Darker shades indicate areas with more flight activity, helping to visualize regional air traffic intensity.
+                This map shows flight volumes across Australian states.
             </p>
             <div id="map2"></div>
         </div>
-        
+    
         <div class="gauge-container small-chart">
             <h3 style="color: #00355f;">On-time Performance Comparison</h3>
             <p style="color: #00355f;">
-                Compare on-time performance between arrivals and departures with this chart. 
-                It reveals any inconsistencies in flight punctuality, offering insights into potential areas for improvement.
+                Compare on-time performance between arrivals and departures.
             </p>
             <div id="onTimeComparison"></div>
         </div>
-        
+    
         <div class="gauge-container bottom-small-chart">
             <h3 style="color: #00355f;">Monthly Flight Counts per Year</h3>
             <p style="color: #00355f;">
-                This heatmap shows the number of flights each month over multiple years. 
-                Darker shades indicate busier months, making it easier to spot seasonal trends in air travel.
+                This heatmap shows monthly flight counts over the years.
             </p>
             <div id="heatmap-vis"></div>
         </div>
-        
+    
         <div class="gauge-container small-chart">
             <h3 style="color: #00355f;">Flight Arrivals vs Departures</h3>
             <p style="color: #00355f;">
-                This pie chart visualizes the proportion of arrivals versus departures for each city. 
-                It helps identify cities that serve as major transit hubs or destinations.
+                A pie chart showing arrivals vs departures for each city.
             </p>
             <label for="citySelect" style="color: #00355f;">Select City: </label>
             <select id="citySelect" onchange="updateCharts()"></select>
             <div id="additional-chart-2"></div>
         </div>
-        
+    
         <div class="gauge-container bottom-small-chart">
             <h3 style="color: #00355f;">Overall Flight On-time Performance</h3>
             <p style="color: #00355f;">
-                This line chart tracks the trend of on-time performance over the years, 
-                allowing a deeper understanding of long-term improvements or challenges in flight punctuality.
+                This chart tracks flight on-time performance over the years.
             </p>
             <div id="additional-chart-3"></div>
         </div>
-        
+    
         <div class="gauge-container bottom-small-chart">
             <h3 style="color: #00355f;">Introduction</h3>
             <p style="color: #00355f;">
-                Welcome to the Australian Flights Dashboard. This dashboard provides insights into the air travel landscape of Australia, 
-                including city-specific traffic, airline punctuality, and cancellation rates. Use the interactive elements to explore 
-                different aspects of air travel data and understand the dynamics of Australia’s aviation sector.
+                <strong>Domain:</strong> This project analyzes the performance of domestic airlines in Australia. 
+                <strong>Who:</strong> Developed by Zonglin Dong, aimed at airline operators, airport managers, and policy makers. 
+                <strong>What:</strong> Visualizes flight performance metrics like on-time departures, cancellations, and overall punctuality. 
+                <strong>Why:</strong> To provide insights into flight reliability and help improve aviation operations. 
+                <strong>How:</strong> Data sourced from Kaggle's Australian Domestic Airlines Dataset, displayed using interactive Vega-Lite visualizations.
+            </p>
+            <p style="color: #00355f;">
+                <strong>Metadata:</strong> Data source: <a href="https://www.kaggle.com/datasets/kwonhoang/ausdomesticairlines" target="_blank">Kaggle Airline Dataset</a>, Year: 2024, Author: Zonglin Dong. Analysis covers flight departures, cancellations, and on-time performance.
             </p>
             <div id="additionalChart4"></div>
         </div>
+        
+        
     </div>
     
     <script type="text/javascript">
@@ -393,10 +406,10 @@ const cancellationGaugeSpec = {
 
             // Function to embed the Australian Cities Map
             async function embedMap() {
-    // 获取用户选择的航空公司
+    
     const selectedAirline = document.getElementById("airlineSelect").value;
 
-    // 如果选择了"Macair"或"MacAir"，则忽略它们并展示所有数据
+   
     const filteredAirline = selectedAirline.toLowerCase() === "macair" ? "All Airlines" : selectedAirline;
 
     const mapSpec = {
@@ -409,7 +422,7 @@ const cancellationGaugeSpec = {
             "center": [133, -28]
         },
         "layer": [
-            // 添加地图底图层，显示澳大利亚地理形状
+           
             {
                 "data": {
                     "url": "https://raw.githubusercontent.com/Zongl1n/FIT3179/refs/heads/main/3179temp/ne_10m_admin_0_countries.json",
@@ -420,14 +433,14 @@ const cancellationGaugeSpec = {
                     "color": {"value": "#00355f"}  
                 }
             },
-            // 显示城市航班数据的层
+           
             {
                 "data": {
                     "url": "https://raw.githubusercontent.com/Zongl1n/FIT3179/refs/heads/main/3179temp/DomesticAirlines.csv",
                     "format": {"type": "csv"}
                 },
                 "transform": [
-                    // 过滤选择的航空公司，忽略"Macair"和"MacAir"
+                   
                     {
                         "filter": filteredAirline === "All Airlines"
                             ? "datum.Departing_Port !== null"
@@ -488,7 +501,7 @@ const cancellationGaugeSpec = {
                         "type": "quantitative",
                         "scale": {"range": [100, 1000]}
                     },
-                    // 美化后的 Tooltip，展示城市名称和航班数量
+                    
                     "tooltip": [
                         {"field": "City1_upper", "type": "nominal", "title": "City"},
                         {"field": "city_count", "type": "quantitative", "title": "Flight Count", "format": ","}
@@ -498,7 +511,7 @@ const cancellationGaugeSpec = {
         ]
     };
 
-    // 嵌入地图
+   
     vegaEmbed('#map', mapSpec).catch(console.error);
 }
 
@@ -570,7 +583,7 @@ const onTimeComparisonSpec = {
     const csvText = await response.text();
     const csvData = csvText.split('\n').slice(1).map(row => row.split(','));
 
-    // Mapping cities to states based on the complete list
+    
     const cityToState = {
         "Sydney": "New South Wales",
         "Newcastle": "New South Wales",
@@ -610,7 +623,7 @@ const onTimeComparisonSpec = {
         "Canberra": "Australian Capital Territory"
     };
 
-    // Aggregate flight volume by state
+    
     const stateFlightVolume = {};
     csvData.forEach(row => {
         const departingCity = row[1];
@@ -684,8 +697,8 @@ const onTimeComparisonSpec = {
     vegaEmbed('#map2', mapSpec2).catch(console.error);
     const spec = {
         "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-        "width": 200,  // 调整宽度
-        "height": 200,  // 调整高度
+        "width": 200,  
+        "height": 200,  
         "data": {
             "url": "https://raw.githubusercontent.com/Zongl1n/FIT3179/refs/heads/main/3179temp/DomesticAirlines.csv",
             "format": {"type": "csv"}
@@ -701,7 +714,7 @@ const onTimeComparisonSpec = {
             }
         },
         "transform": [
-            {"filter": "datum.Year != '2021'"} // 去除2021年的数据
+            {"filter": "datum.Year != '2021'"} 
         ],
         "mark": "rect",
         "encoding": {
@@ -825,64 +838,101 @@ const spec = {
 vegaEmbed('#additional-chart-2', spec).catch(console.error);
 }
 const spec = {
-            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-            "description": "Overall flight on-time performance over the years.",
-            "width": 300,
-            "height": 200,
-            "data": {
-                "url": "https://raw.githubusercontent.com/Zongl1n/FIT3179/refs/heads/main/3179temp/DomesticAirlines.csv",
-                "format": {"type": "csv"}
-            },
-            "transform": [
-                {
-                    "groupby": ["Year"],
-                    "aggregate": [
-                        {"op": "sum", "field": "Departures_On_Time", "as": "Total_Departures_On_Time"},
-                        {"op": "sum", "field": "Departures_Delayed", "as": "Total_Departures_Delayed"}
-                    ]
-                },
-                {
-                    "calculate": "(datum.Total_Departures_On_Time) / (datum.Total_Departures_On_Time + datum.Total_Departures_Delayed) * 100",
-                    "as": "OnTimePercentage"
-                }
-            ],
-            "mark": {
-                "type": "area",
-                "line": {"color": "#00355f"},
-                "point": {"filled": true, "color": "#00355f"},
-                "color": {
-                    "x1": 1,
-                    "x2": 1,
-                    "y1": 1,
-                    "y2": 0,
-                    "gradient": "linear",
-                    "stops": [
-                        {"offset": 0, "color": "#00355f", "opacity": 0.8},
-                        {"offset": 1, "color": "#00355f", "opacity": 0.1}
-                    ]
-                }
-            },
-            "encoding": {
-                "x": {
-                    "field": "Year",
-                    "type": "temporal",
-                    "title": "Year"
-                },
-                "y": {
-                    "field": "OnTimePercentage",
-                    "type": "quantitative",
-                    "title": "On-time Percentage (%)",
-                    "scale": {"domain": [0, 100]}
-                },
-                "tooltip": [
-                    {"field": "Year", "type": "temporal", "title": "Year"},
-                    {"field": "OnTimePercentage", "type": "quantitative", "title": "On-time %", "format": ".2f"}
-                ]
-            }
-        };
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Comparison of Flight Rate and On-Time Performance with customized tooltip",
+  "width": 300,  
+  "height": 200,  
+  "data": {
+    "url": "https://raw.githubusercontent.com/Zongl1n/FIT3179/refs/heads/main/3179temp/DomesticAirlines.csv",
+    "format": {"type": "csv"}
+  },
+  "transform": [
+    {
+      "aggregate": [
+        {"op": "sum", "field": "Departures_On_Time", "as": "on_time_sum"},
+        {"op": "sum", "field": "Cancellations", "as": "cancel_sum"},
+        {"op": "sum", "field": "Departures_Delayed", "as": "delayed_sum"}
+      ],
+      "groupby": ["Month"]
+    },
+    {
+      "calculate": "(datum.on_time_sum + datum.delayed_sum + datum.cancel_sum)",
+      "as": "total_flights"
+    },
+    {
+      "calculate": "datum.cancel_sum / datum.total_flights * 100",
+      "as": "cancel_rate"
+    },
+    {
+      "calculate": "100 - datum.cancel_rate",
+      "as": "flight_rate"
+    },
+    {
+      "calculate": "datum.on_time_sum / datum.total_flights * 100",
+      "as": "on_time_percentage"
+    },
+    {
+      "fold": ["flight_rate", "on_time_percentage"],
+      "as": ["Flight Type", "Percentage"]
+    }
+  ],
+  "mark": {
+    "type": "bar",
+    "tooltip": true
+  },
+  "encoding": {
+    "y": {
+      "field": "Month",
+      "type": "ordinal",
+      "sort": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      "title": null
+    },
+    "x": {
+      "field": "Percentage",
+      "type": "quantitative",
+      "title": "Percentage (%)",
+      "scale": {"domain": [0, 100]},
+      "axis": null  
+    },
+    "color": {
+      "field": "Flight Type",
+      "type": "nominal",
+      "scale": {
+        "domain": ["flight_rate", "on_time_percentage"],
+        "range": ["#FFD700", "#00355f"]
+      },
+      "legend": {"orient": "top", "title": "Flight Data"}
+    },
+    "tooltip": [
+      {"field": "Month", "type": "ordinal", "title": "Month"},
+      {
+        "field": "Flight Type",
+        "type": "nominal",
+        "title": "Flight Metric",
+        "format": {
+          "flight_rate": "Flight Rate",
+          "on_time_percentage": "On-Time Performance"
+        }
+      },
+      {
+        "field": "Percentage",
+        "type": "quantitative",
+        "title": "Percentage",
+        "format": ".2f",
+        "formatType": "number",
+        "formatPattern": "#.2f %"
+      }
+    ]
+  },
+  "config": {
+    "view": {"stroke": null},
+    "axis": {"grid": false}
+  }
+};
 
-        // Embed the chart into the "additional-chart-3" container
-        vegaEmbed('#additional-chart-3', spec).catch(console.error);
+// Embed the chart into the "additional-chart-3" container
+vegaEmbed('#additional-chart-3', spec).catch(console.error);
+
 
 loadCities();
 
